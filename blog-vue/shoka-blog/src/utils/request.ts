@@ -4,7 +4,7 @@ import { getToken, token_prefix } from "./token";
 
 const requests = axios.create({
   baseURL: "/api",
-  timeout: 10000,
+  timeout: 50000,
   // 请求头
   headers: {
     "Content-Type": "application/json;charset=UTF-8",

@@ -28,8 +28,6 @@ declare module '@vue/runtime-core' {
     NDrawerContent: typeof import('naive-ui')['NDrawerContent']
     NForm: typeof import('naive-ui')['NForm']
     NFormItem: typeof import('naive-ui')['NFormItem']
-    NGrid: typeof import('naive-ui')['NGrid']
-    NGridItem: typeof import('naive-ui')['NGridItem']
     NInput: typeof import('naive-ui')['NInput']
     NInputGroup: typeof import('naive-ui')['NInputGroup']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
