@@ -99,19 +99,19 @@ search:
   mode: mysql
 # 文件上传策略 local、oss、cos
 upload:
-  strategy: local
-  local:
-#    # nginx映射本地文件路径
-    url: https://127.0.0.1:8080/
-    # 本地文件存储路径
-    path: /upload/
+  strategy: oss
+#  local:
+##    # nginx映射本地文件路径
+#    url: https://127.0.0.1:8080/
+#    # 本地文件存储路径
+#    path: /upload/
 #  # oss存储
-#  oss:
-#    url: http://Bucket域名/
-#    endpoint: OSS配置endpoint
-#    bucketName: OSS配置bucketName
-#    accessKeyId: OSS配置accessKeyId
-#    accesskeySecret: OSS配置accesskeySecret
+  oss:
+    url: http://oss-cn-beijing.aliyuncs.com/
+    endpoint: oss-cn-beijing.aliyuncs.com
+    bucketName: jihu-blog
+    accessKeyId: OSS配置accessKeyId
+    accesskeySecret: OSS配置accesskeySecret
 #  # cos存储
 #  cos:
 #    url: https://Bucket域名/
