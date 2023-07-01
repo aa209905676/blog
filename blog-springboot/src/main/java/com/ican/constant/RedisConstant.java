@@ -67,4 +67,14 @@ public class RedisConstant {
      */
     public static final String BLOG_VIEW_COUNT = "blog_view_count";
 
+
+    /**
+     * 博客列表
+     */
+    public static final String ARTICLE_HOME_LIST = "articleHomeList";
+
+    /**
+     * 博客列表
+     */
+    public static final String ARTICLE_INFO = "article_info";
 }

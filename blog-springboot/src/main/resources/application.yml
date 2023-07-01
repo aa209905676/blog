@@ -100,18 +100,18 @@ search:
 # 文件上传策略 local、oss、cos
 upload:
   strategy: oss
-#  local:
-##    # nginx映射本地文件路径
-#    url: https://127.0.0.1:8080/
-#    # 本地文件存储路径
-#    path: /upload/
+  local:
+#    # nginx映射本地文件路径
+    url: https://127.0.0.1:8080/
+    # 本地文件存储路径
+    path: /upload/
 #  # oss存储
   oss:
-    url: http://oss-cn-beijing.aliyuncs.com/
-    endpoint: oss-cn-beijing.aliyuncs.com
+    url: https://jihu-blog.oss-cn-beijing.aliyuncs.com/
+    endpoint: https://oss-cn-beijing.aliyuncs.com
     bucketName: jihu-blog
-    accessKeyId: OSS配置accessKeyId
-    accesskeySecret: OSS配置accesskeySecret
+    accessKeyId: LTAI5tHbNjU3nUEar8fG4Xer
+    accesskeySecret: nr6QG5VsXClaO6QOQNA9uF9hv1Wx9l
 #  # cos存储
 #  cos:
 #    url: https://Bucket域名/
@@ -198,3 +198,14 @@ sa-token:
 #    user-info-url: https://graph.qq.com/user/get_user_info?openid={openid}&access_token={access_token}&oauth_consumer_key={oauth_consumer_key}
 # B站图片上传链接
 bili-url: https://api.bilibili.com/x/dynamic/feed/draw/upload_bfs
+tlog:
+  # 自动打印调用参数和时间
+  enable-invoke-time-print: true
+  # 打印上层服务名称、ip
+  pattern: '[$preApp][$preIp][$spanId][$traceId]'
+logging:
+  file:
+    name: ${spring.application.name}
+  level:
+    com.ican: ERROR
+    org.springframework.data.redis.core: DEBUG

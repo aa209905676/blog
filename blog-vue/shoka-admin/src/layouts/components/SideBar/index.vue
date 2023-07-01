@@ -4,9 +4,9 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <!-- 侧边栏 -->
     <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-menu :default-active="activeMenu" :unique-opened="true" :collapse="isCollapse" :collapse-transition="false"
+      <el-menu :default-active="activeMenu"  :unique-opened="true" :collapse="isCollapse" :collapse-transition="true"
         :background-color="variables.menuBg" :text-color="variables.menuText"
-        :active-text-color="variables.menuActiveText">
+        :active-text-color="variables.menuActiveText" >
         <sidebar-item v-for="route in routes" :item="route" :key="route.path" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>

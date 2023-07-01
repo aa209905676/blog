@@ -1,7 +1,9 @@
 package com.ican.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.ArrayUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -19,15 +21,13 @@ import com.ican.utils.BeanCopyUtils;
 import com.ican.utils.FileUtils;
 import com.ican.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ican.constant.CommonConstant.FALSE;
@@ -70,6 +70,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Autowired
     private BlogFileMapper blogFileMapper;
+
 
     @Override
     public PageResult<ArticleBackVO> listArticleBackVO(ConditionDTO condition) {
@@ -194,6 +195,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public PageResult<ArticleHomeVO> listArticleHomeVO() {
+        List<ArticleHomeVO> articleHomeVOList = redisService.getList(ARTICLE_HOME_LIST);
+        if (articleHomeVOList != null) {
+            return new PageResult<>(articleHomeVOList,(long)articleHomeVOList.size());
+        }
         // 查询文章数量
         Long count = articleMapper.selectCount(new LambdaQueryWrapper<Article>()
                 .eq(Article::getIsDelete, FALSE)
@@ -202,17 +207,26 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             return new PageResult<>();
         }
         // 查询首页文章
-        List<ArticleHomeVO> articleHomeVOList = articleMapper.selectArticleHomeList(PageUtils.getLimit(), PageUtils.getSize());
+        articleHomeVOList = articleMapper.selectArticleHomeList(PageUtils.getLimit(), PageUtils.getSize());
+        redisService.setList(ARTICLE_HOME_LIST,articleHomeVOList);
+        
         return new PageResult<>(articleHomeVOList, count);
     }
 
     @Override
     public ArticleVO getArticleHomeById(Integer articleId) {
-        // 查询文章信息
-        ArticleVO article = articleMapper.selectArticleHomeById(articleId);
+        // 从Redis中获取文章数据
+        ArticleVO article = redisService.getHash(ARTICLE_INFO, articleId.toString());
         if (Objects.isNull(article)) {
-            return null;
+            // 查询文章信息
+            article = articleMapper.selectArticleHomeById(articleId);
+            if (Objects.isNull(article)) {
+                return null;
+            }
         }
+
+        // 将文章数据存储到Redis中
+        redisService.setHash(ARTICLE_INFO, articleId.toString(), article);
         // 浏览量+1
         redisService.incrZet(ARTICLE_VIEW_COUNT, articleId, 1D);
         // 查询上一篇文章

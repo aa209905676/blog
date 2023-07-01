@@ -241,6 +241,15 @@ public interface RedisService {
      */
     <T> Long setListAll(String key, long timeout, TimeUnit timeUnit, T... values);
 
+
+    /**
+     * 获取List结构中的值
+     *
+     * @param key   键
+     * @return List集合
+     */
+    <T> List<T> getList(String key);
+
     /**
      * 获取List结构中的值
      *

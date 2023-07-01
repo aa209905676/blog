@@ -154,6 +154,12 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public <T> List<T> getList(String key) {
+        List<T> result = (List<T>) redisTemplate.opsForList().range(key, 0, -1);
+        return result;
+    }
+
+    @Override
     public <T> List<T> getList(String key, long start, long end) {
         List<T> result = (List<T>) redisTemplate.opsForList().range(key, start, end);
         return result;
