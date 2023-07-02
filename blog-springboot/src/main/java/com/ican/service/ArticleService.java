@@ -118,4 +118,5 @@ public interface ArticleService extends IService<Article> {
      * @return 文章图片地址
      */
     String saveArticleImages(MultipartFile file);
+
 }

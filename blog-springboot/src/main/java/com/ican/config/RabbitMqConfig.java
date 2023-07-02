@@ -1,7 +1,11 @@
 package com.ican.config;
 
+import com.ican.service.ArticleService;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +21,8 @@ import static com.ican.constant.MqConstant.*;
 @Slf4j
 @Configuration
 public class RabbitMqConfig {
+
+    private static final String QUEUE_NAME = "articleQueue";
 
     /**
      * 消息转换器
@@ -88,5 +94,22 @@ public class RabbitMqConfig {
     @Bean
     public Binding articleQueueBinding() {
         return BindingBuilder.bind(articleQueue()).to(articleExchange()).with(ARTICLE_KEY);
+    }
+
+
+
+    @Bean
+    public MessageListenerContainer messageListenerContainer(ConnectionFactory connectionFactory, ArticleService articleService) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setQueueNames(QUEUE_NAME);
+        container.setMessageListener(message -> {
+            // 这里处理请求
+            String messageBody = new String(message.getBody());
+            if ("listArticleHomeVO".equals(messageBody)) {
+                articleService.listArticleHomeVO();
+            }
+        });
+        return container;
     }
 }

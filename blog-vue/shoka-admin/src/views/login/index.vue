@@ -54,6 +54,10 @@ const handleLogin = async (formEl: FormInstance | undefined) => {
                 loading.value = false;
             }).catch(() => {
                 loading.value = false;
+				console.error(error);
+				    // 在这里添加你的处理代码
+				    // 例如，你可以显示一个消息给用户
+				    alert('登录失败，请检查L你的用户名和密码是否正确。');
             });
         } else {
             return false;

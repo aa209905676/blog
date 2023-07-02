@@ -151,8 +151,6 @@ sa-token:
   token-name: Authorization
   # token前缀
   token-prefix: Bearer
-  # token有效期，单位s 默认30天, -1代表永不过期
-  timeout: 1800
   # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
   activity-timeout: -1
   # 关闭自动续签

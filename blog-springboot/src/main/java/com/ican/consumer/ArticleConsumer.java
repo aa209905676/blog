@@ -2,8 +2,13 @@ package com.ican.consumer;
 
 import cn.hutool.json.JSONUtil;
 import com.ican.model.dto.CanalDTO;
+import com.ican.model.vo.ArticleHomeVO;
 import com.ican.model.vo.ArticleSearchVO;
+import com.ican.model.vo.PageResult;
+import com.ican.service.ArticleService;
 import com.ican.service.ElasticsearchService;
+import com.ican.service.impl.ArticleServiceImpl;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -13,6 +18,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 
 import static com.ican.constant.ElasticConstant.*;
@@ -55,4 +61,6 @@ public class ArticleConsumer {
                 break;
         }
     }
+
+
 }

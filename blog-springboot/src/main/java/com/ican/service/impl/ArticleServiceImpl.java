@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -20,6 +21,8 @@ import com.ican.strategy.context.UploadStrategyContext;
 import com.ican.utils.BeanCopyUtils;
 import com.ican.utils.FileUtils;
 import com.ican.utils.PageUtils;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -72,6 +75,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private BlogFileMapper blogFileMapper;
 
 
+
     @Override
     public PageResult<ArticleBackVO> listArticleBackVO(ConditionDTO condition) {
         // 查询文章数量
@@ -111,6 +115,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         baseMapper.insert(newArticle);
         // 保存文章标签
         saveArticleTag(article, newArticle.getId());
+        redisService.deleteObject(ARTICLE_HOME_LIST);
+
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -121,6 +127,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 .in(ArticleTag::getArticleId, articleIdList));
         // 删除文章
         articleMapper.deleteBatchIds(articleIdList);
+        List<String> collect = articleIdList.stream()
+                .map(Object::toString)
+                .collect(Collectors.toList());
+        redisService.deleteObject(collect);
     }
 
     @Override
@@ -136,6 +146,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                         .build())
                 .collect(Collectors.toList());
         this.updateBatchById(articleList);
+        delete.getIdList().forEach(id->{
+            redisService.deleteHash(ARTICLE_VO,id.toString());
+            redisService.deleteHash(ARTICLE_INFO,id.toString());
+        });
+        redisService.deleteObject(ARTICLE_HOME_LIST);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -150,13 +165,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         baseMapper.updateById(newArticle);
         // 保存文章标签
         saveArticleTag(article, newArticle.getId());
+        // 删除之前保存在redis的值
+        redisService.deleteHash(ARTICLE_VO,article.getId());
     }
 
     @Override
     public ArticleInfoVO editArticle(Integer articleId) {
-        // 查询文章信息
-        ArticleInfoVO articleInfoVO = articleMapper.selectArticleInfoById(articleId);
-        Assert.notNull(articleInfoVO, "没有该文章");
+        ArticleInfoVO  articleInfoVO  = redisService.getHash(ARTICLE_INFO, articleId.toString());
+        if(articleInfoVO == null && ObjectUtil.isEmpty(articleInfoVO)) {
+            // 查询文章信息
+            articleInfoVO = articleMapper.selectArticleInfoById(articleId);
+            Assert.notNull(articleInfoVO, "没有该文章");
+        }
         // 查询文章分类名称
         Category category = categoryMapper.selectOne(new LambdaQueryWrapper<Category>()
                 .select(Category::getCategoryName)
@@ -165,6 +185,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<String> tagNameList = tagMapper.selectTagNameByArticleId(articleId);
         articleInfoVO.setCategoryName(category.getCategoryName());
         articleInfoVO.setTagNameList(tagNameList);
+        redisService.setHash(ARTICLE_INFO, articleId.toString(),articleInfoVO);
         return articleInfoVO;
     }
 
@@ -196,7 +217,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public PageResult<ArticleHomeVO> listArticleHomeVO() {
         List<ArticleHomeVO> articleHomeVOList = redisService.getList(ARTICLE_HOME_LIST);
-        if (articleHomeVOList != null) {
+        if (ObjectUtil.isNull(articleHomeVOList)) {
             return new PageResult<>(articleHomeVOList,(long)articleHomeVOList.size());
         }
         // 查询文章数量
@@ -209,14 +230,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         // 查询首页文章
         articleHomeVOList = articleMapper.selectArticleHomeList(PageUtils.getLimit(), PageUtils.getSize());
         redisService.setList(ARTICLE_HOME_LIST,articleHomeVOList);
-        
+
         return new PageResult<>(articleHomeVOList, count);
     }
+
 
     @Override
     public ArticleVO getArticleHomeById(Integer articleId) {
         // 从Redis中获取文章数据
-        ArticleVO article = redisService.getHash(ARTICLE_INFO, articleId.toString());
+        ArticleVO article = redisService.getHash(ARTICLE_VO, articleId.toString());
         if (Objects.isNull(article)) {
             // 查询文章信息
             article = articleMapper.selectArticleHomeById(articleId);
@@ -224,9 +246,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 return null;
             }
         }
-
         // 将文章数据存储到Redis中
-        redisService.setHash(ARTICLE_INFO, articleId.toString(), article);
+        redisService.setHash(ARTICLE_VO, articleId.toString(), article);
         // 浏览量+1
         redisService.incrZet(ARTICLE_VIEW_COUNT, articleId, 1D);
         // 查询上一篇文章
@@ -312,6 +333,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                     .build();
             // 保存分类
             categoryMapper.insert(category);
+
         }
         return category.getId();
     }

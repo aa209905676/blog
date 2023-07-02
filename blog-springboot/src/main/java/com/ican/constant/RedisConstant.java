@@ -74,7 +74,17 @@ public class RedisConstant {
     public static final String ARTICLE_HOME_LIST = "articleHomeList";
 
     /**
-     * 博客列表
+     * 博客详情
+     */
+    public static final String ARTICLE_VO = "article";
+
+    /**
+     * 博客详情
      */
     public static final String ARTICLE_INFO = "article_info";
+
+    /**
+     * 访客日志
+     */
+    public static final String VISIT_LOG = "visit_log";
 }
