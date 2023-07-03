@@ -98,6 +98,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 处理敏感词异常
+     */
+    @ExceptionHandler(value = SensitiveWordException.class)
+    public Result<?> handleSensitiveWordException(SensitiveWordException e) {
+        return Result.fail(e.getMessage());
+    }
+
+    /**
      * 处理系统异常
      */
 //    @ExceptionHandler(value = Exception.class)

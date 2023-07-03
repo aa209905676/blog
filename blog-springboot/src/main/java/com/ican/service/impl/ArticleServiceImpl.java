@@ -1,6 +1,8 @@
 package com.ican.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ArrayUtil;
@@ -9,7 +11,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.ican.entity.*;
+import com.ican.handler.SensitiveWordException;
 import com.ican.mapper.*;
 import com.ican.model.dto.*;
 import com.ican.model.vo.*;
@@ -102,6 +106,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void addArticle(ArticleDTO article) {
+        List<String> sensitive = SensitiveWordHelper.findAll(article.toString());
+        if (!sensitive.isEmpty()){
+            throw new SensitiveWordException("包含违规敏感词：" + String.join(", ", sensitive));
+        }
         // 保存文章分类
         Integer categoryId = saveArticleCategory(article);
         // 添加文章

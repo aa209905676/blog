@@ -2,8 +2,10 @@ package com.ican.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.ican.entity.Message;
 import com.ican.entity.SiteConfig;
+import com.ican.handler.SensitiveWordException;
 import com.ican.mapper.MessageMapper;
 import com.ican.model.dto.CheckDTO;
 import com.ican.model.dto.ConditionDTO;
@@ -68,6 +70,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
 
     @Override
     public void addMessage(MessageDTO message) {
+        List<String> sensitive = SensitiveWordHelper.findAll(message.toString());
+        if (!sensitive.isEmpty()){
+            throw new SensitiveWordException("内容包含违规敏感词：" + String.join(", ", sensitive));
+        }
         SiteConfig siteConfig = siteConfigService.getSiteConfig();
         Integer messageCheck = siteConfig.getMessageCheck();
         String ipAddress = IpUtils.getIpAddress(request);

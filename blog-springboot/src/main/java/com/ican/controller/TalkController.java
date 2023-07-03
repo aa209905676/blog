@@ -2,10 +2,12 @@ package com.ican.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.ican.annotation.AccessLimit;
 import com.ican.annotation.OptLogger;
 import com.ican.annotation.VisitLogger;
 import com.ican.enums.LikeTypeEnum;
+import com.ican.handler.SensitiveWordException;
 import com.ican.model.dto.ConditionDTO;
 import com.ican.model.dto.TalkDTO;
 import com.ican.model.vo.*;
@@ -77,6 +79,10 @@ public class TalkController {
     @SaCheckPermission("web:talk:add")
     @PostMapping("/admin/talk/add")
     public Result<?> addTalk(@Validated @RequestBody TalkDTO talk) {
+        List<String> sensitive = SensitiveWordHelper.findAll(talk.toString());
+        if (!sensitive.isEmpty()){
+            throw new SensitiveWordException("包含违规敏感词：" + String.join(", ", sensitive));
+        }
         talkService.addTalk(talk);
         return Result.success();
     }

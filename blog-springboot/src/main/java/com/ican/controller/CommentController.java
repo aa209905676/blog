@@ -2,9 +2,11 @@ package com.ican.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.github.houbb.sensitive.word.core.SensitiveWordHelper;
 import com.ican.annotation.AccessLimit;
 import com.ican.annotation.OptLogger;
 import com.ican.enums.LikeTypeEnum;
+import com.ican.handler.SensitiveWordException;
 import com.ican.model.dto.CheckDTO;
 import com.ican.model.dto.CommentDTO;
 import com.ican.model.dto.ConditionDTO;
@@ -61,6 +63,10 @@ public class CommentController {
     @SaCheckPermission("news:comment:add")
     @PostMapping("/comment/add")
     public Result<?> addComment(@Validated @RequestBody CommentDTO comment) {
+        List<String> sensitive = SensitiveWordHelper.findAll(comment.toString());
+        if (!sensitive.isEmpty()){
+            throw new SensitiveWordException("包含违规敏感词：" + String.join(", ", sensitive));
+        }
         commentService.addComment(comment);
         return Result.success();
     }
