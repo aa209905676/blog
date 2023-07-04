@@ -225,7 +225,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     public PageResult<ArticleHomeVO> listArticleHomeVO() {
         List<ArticleHomeVO> articleHomeVOList = redisService.getList(ARTICLE_HOME_LIST);
-        if (ObjectUtil.isNull(articleHomeVOList)) {
+        if (ObjectUtil.isNotEmpty(articleHomeVOList)) {
             return new PageResult<>(articleHomeVOList,(long)articleHomeVOList.size());
         }
         // 查询文章数量

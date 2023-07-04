@@ -12,7 +12,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://139.159.239.218:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
     username: root
     password: 123456
     druid:
@@ -48,7 +48,7 @@ spring:
   # redis配置
   redis:
     # Redis服务器地址
-    host: 127.0.0.1
+    host: 139.159.239.218
     # Redis服务器连接端口
     port: 6379
     # 连接超时时间
@@ -65,18 +65,17 @@ spring:
         min-idle: 50
   # rabbitmq配置
   rabbitmq:
-    host: 127.0.0.1
+    host: 139.159.239.218
     port: 5672
-    username: guest
-    password: guest
+    username: root
+    password: root
     listener:
       simple:
         retry:
           enabled: true
-          # 重试间隔时间
           initial-interval: 3000
-          # 最大重试次数
           max-attempts: 3
+
   # 邮箱配置
   mail:
     host: smtp.qq.com
@@ -151,6 +150,8 @@ sa-token:
   token-name: Authorization
   # token前缀
   token-prefix: Bearer
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 1800
   # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
   activity-timeout: -1
   # 关闭自动续签

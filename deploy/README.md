@@ -125,7 +125,7 @@ chmod +x /usr/local/bin/docker-compose
 
    ```properties
    # tcp, kafka, rocketMQ, rabbitMQ, pulsarMQ
-   canal.serverMode = rabbitMQ
+   canal.serverMode = rabbitMQ 
    ```
 
    > 接着找到以下这几行
@@ -376,3 +376,4 @@ kibana 不用的话，一定要关掉（好像带不动），需要的时候再�
 ## 11. 最后
 
 有什么问题的话，可以在下方评论区评论。不方便评论的话，可以加我联系方式私聊。写的不对的地方欢迎大家在评论区指出
+
