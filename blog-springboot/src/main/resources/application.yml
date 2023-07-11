@@ -12,7 +12,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://139.159.239.218:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
+    url: jdbc:mysql://127.0.0.1:3306/blog?serverTimezone=Asia/Shanghai&allowMultiQueries=true&rewriteBatchedStatements=true
     username: root
     password: 123456
     druid:
@@ -48,7 +48,7 @@ spring:
   # redis配置
   redis:
     # Redis服务器地址
-    host: 139.159.239.218
+    host: 127.0.0.1
     # Redis服务器连接端口
     port: 6379
     # 连接超时时间
@@ -65,7 +65,7 @@ spring:
         min-idle: 50
   # rabbitmq配置
   rabbitmq:
-    host: 139.159.239.218
+    host: 127.0.0.1
     port: 5672
     username: root
     password: root
@@ -82,7 +82,7 @@ spring:
     # 用户名
     username: 209905676@qq.com
     # 授权码
-    password: grytjfykuolsbgcg
+    password: xxxxxxx
 # 博客链接 域名后面要加/
 blog:
   url: 127.0.0.1
@@ -106,11 +106,11 @@ upload:
     path: /upload/
 #  # oss存储
   oss:
-    url: https://jihu-blog.oss-cn-beijing.aliyuncs.com/
-    endpoint: https://oss-cn-beijing.aliyuncs.com
-    bucketName: jihu-blog
-    accessKeyId: LTAI5tHbNjU3nUEar8fG4Xer
-    accesskeySecret: nr6QG5VsXClaO6QOQNA9uF9hv1Wx9l
+    url: xxxx
+    endpoint: xxx
+    bucketName: xx
+    accessKeyId: xx
+    accesskeySecret: xx
 #  # cos存储
 #  cos:
 #    url: https://Bucket域名/
