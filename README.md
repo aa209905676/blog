@@ -1,42 +1,11 @@
 ## 博客介绍
 
-<p align="center">
-  <a href="https://www.ttkwsd.top">
-    <img src="https://foruda.gitee.com/avatar/1662735858745624876/7774198_wu_shengdong_1662735858.png" alt="阿冬的个人博客" style="border-radius: 50%;">
-  </a>
-</p>
+
 
 <p align="center">
    基于Springboot + Vue3 开发的前后端分离博客
 </p>
 
-<p align="center">
-   <a target="_blank" href="https://github.com/ttkican/Blog">
-      <img src="https://img.shields.io/badge/JDK-11-green"/>
-      <img src="https://img.shields.io/badge/springboot-2.6.14-green"/>
-      <img src="https://img.shields.io/badge/saToken-1.34.0-green"/>
-      <img src="https://img.shields.io/badge/vue-3.x-green"/>
-      <img src="https://img.shields.io/badge/mysql-8.0.27-green"/>
-      <img src="https://img.shields.io/badge/mybatis--plus-3.5.2-green"/>
-      <img src="https://img.shields.io/badge/redis-6.2.6-green"/>
-      <img src="https://img.shields.io/badge/elasticsearch-7.17.3-green"/>
-      <img src="https://img.shields.io/badge/rabbitmq-3.9.11-green"/>
-   </a>
-</p>
-
-## 在线地址
-
-**项目链接：** [www.ttkwsd.top](https://www.ttkwsd.top)
-
-**后台链接：** [admin.ttkwsd.top](https://admin.ttkwsd.top)
-
-**测试账号：** test@qq.com，**密码**：123456
-
-**Github 地址：** [https://github.com/ttkican/Blog](https://github.com/ttkican/Blog)
-
-**Gitee 地址：** [https://gitee.com/wu_shengdong/blog](https://gitee.com/wu_shengdong/blog)
-
-**接口文档：** https://www.ttkwsd.top/api/doc.html
 
 ## 本地运行
 
